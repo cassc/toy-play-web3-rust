@@ -1,0 +1,3 @@
+[workspace]
+members = [ "crates/amm", "crates/arbitrage","crates/ecc", "crates/keccak", "crates/merkle", "crates/mpt", "crates/sim", "crates/sim-by-anvil"]
+resolver = "2"

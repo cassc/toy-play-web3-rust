@@ -1,0 +1,16 @@
+[package]
+name = "ecc"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+alloy = { version = "1.0.6", features = ["full", "signers"] }
+arrayref = "0.3.9"
+eyre = "0.6.12"
+hex = { version = "0.4.3", features = ["serde"] }
+k256 = { version = "0.13.4", features = ["pem", "serde", "jwk", "ecdsa-core"] }
+rand = { version = "0.8.4", features = ["serde"] }
+secp256k1 = { version = "0.30", features = ["recovery", "rand"] }
+sha2 = "0.10.9"
+sha3 = "0.10.8"
+tokio = "1.45.0"

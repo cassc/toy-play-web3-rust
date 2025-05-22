@@ -1,0 +1,122 @@
+digraph EthereumMerkleTreesWithStorage {
+    rankdir=TD;
+    node [shape=box, style="rounded,filled", fontname="Arial"];
+    edge [fontname="Arial", fontsize=10];
+
+    // Main Block
+    subgraph cluster_ethereum_block {
+        label="Ethereum Block";
+        bgcolor="lightgrey";
+        fontsize=16;
+        style="filled,rounded";
+
+        // Using HTML-like label for BlockHeader for robustness and ports
+        BlockHeader [
+            label=<
+                <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="khaki">
+                    <TR><TD ALIGN="CENTER" COLSPAN="2"><B>Block Header</B></TD></TR>
+                    <TR><TD ALIGN="LEFT" PORT="parentHash">- Parent Hash</TD><TD ALIGN="LEFT">0xabc...</TD></TR>
+                    <TR><TD ALIGN="LEFT" PORT="stateRootCell">- State Root (Hash)</TD><TD ALIGN="LEFT">(points to State Trie)</TD></TR>
+                    <TR><TD ALIGN="LEFT" PORT="txRootCell">- Transactions Root (Hash)</TD><TD ALIGN="LEFT">(points to Transactions Trie)</TD></TR>
+                    <TR><TD ALIGN="LEFT" PORT="receiptsRootCell">- Receipts Root (Hash)</TD><TD ALIGN="LEFT">(points to Receipts Trie)</TD></TR>
+                    <TR><TD ALIGN="LEFT" COLSPAN="2">- Nonce, Difficulty, etc.</TD></TR>
+                </TABLE>
+            >,
+            shape=plain // Shape is plain because the table defines the structure
+        ];
+
+        // State Trie
+        subgraph cluster_state_trie {
+            label="1. Global State Trie (Merkle Patricia Trie)";
+            bgcolor="lightblue";
+            fontsize=12;
+            style="filled,rounded";
+
+            StateRoot [label="State Root", fillcolor="lightblue4", fontcolor="white"];
+            S_Node_A [label="Node", fillcolor="aliceblue"];
+            S_Node_B [label="Node", fillcolor="aliceblue"];
+            S_Leaf_EOA [label="EOA Account 1:\n{nonce, balance,\nEMPTY_STORAGE_ROOT,\nEMPTY_CODE_HASH}", shape=ellipse, fillcolor="azure"];
+            S_Leaf_Contract [label="Contract Account 2:\n{nonce, balance,\nstorageRoot (Hash),\ncodeHash (Hash)}", shape=ellipse, fillcolor="azure", peripheries=2];
+            S_Leaf_N [label="...", shape=ellipse, fillcolor="azure"];
+
+            StateRoot -> S_Node_A;
+            StateRoot -> S_Node_B;
+            S_Node_A -> S_Leaf_EOA;
+            S_Node_A -> S_Leaf_Contract;
+            S_Node_B -> S_Leaf_N;
+
+            subgraph cluster_account_storage_trie {
+                label="1a. Account Storage Trie\n(for Contract Account 2)";
+                bgcolor="lightcyan";
+                fontsize=10;
+                style="filled,rounded";
+
+                AccountStorageRoot [label="storageRoot", fillcolor="cadetblue", fontcolor="white"];
+                AS_Node_1 [label="Node", fillcolor="azure2"];
+                AS_Node_2 [label="Node", fillcolor="azure2"];
+                AS_Leaf_1 [label="Storage Slot 0:\n{Value_A}", shape=ellipse, fillcolor="azure3"];
+                AS_Leaf_2 [label="Storage Slot 1:\n{Value_B}", shape=ellipse, fillcolor="azure3"];
+                AS_Leaf_M [label="...", shape=ellipse, fillcolor="azure3"];
+
+                AccountStorageRoot -> AS_Node_1;
+                AccountStorageRoot -> AS_Node_2;
+                AS_Node_1 -> AS_Leaf_1;
+                AS_Node_1 -> AS_Leaf_2;
+                AS_Node_2 -> AS_Leaf_M;
+            }
+             S_Leaf_Contract -> AccountStorageRoot [label=" contains\n storageRoot", style=dashed, color=darkslategray, penwidth=1.5, dir=forward];
+        }
+
+        // Transactions Trie
+        subgraph cluster_transactions_trie {
+            label="2. Transactions Trie (Merkle Patricia Trie)";
+            bgcolor="lightgreen";
+            fontsize=12;
+            style="filled,rounded";
+
+            TransactionsRoot [label="Transactions Root", fillcolor="darkseagreen4", fontcolor="white"];
+            T_Node_A [label="Node", fillcolor="honeydew"];
+            T_Node_B [label="Node", fillcolor="honeydew"];
+            T_Leaf_1 [label="Transaction 0:\n{from, to, value, data...}", shape=ellipse, fillcolor="mintcream"];
+            T_Leaf_2 [label="Transaction 1:\n{from, to, value, data...}", shape=ellipse, fillcolor="mintcream"];
+            T_Leaf_N [label="...", shape=ellipse, fillcolor="mintcream"];
+
+            TransactionsRoot -> T_Node_A;
+            TransactionsRoot -> T_Node_B;
+            T_Node_A -> T_Leaf_1;
+            T_Node_A -> T_Leaf_2;
+            T_Node_B -> T_Leaf_N;
+        }
+
+        // Receipts Trie
+        subgraph cluster_receipts_trie {
+            label="3. Receipts Trie (Merkle Patricia Trie)";
+            bgcolor="lightcoral";
+            fontsize=12;
+            style="filled,rounded";
+
+            ReceiptsRoot [label="Receipts Root", fillcolor="indianred4", fontcolor="white"];
+            R_Node_A [label="Node", fillcolor="mistyrose"];
+            R_Node_B [label="Node", fillcolor="mistyrose"];
+            R_Leaf_1 [label="Receipt 0:\n{status, gasUsed, logs...}", shape=ellipse, fillcolor="seashell"];
+            R_Leaf_2 [label="Receipt 1:\n{status, gasUsed, logs...}", shape=ellipse, fillcolor="seashell"];
+            R_Leaf_N [label="...", shape=ellipse, fillcolor="seashell"];
+
+            ReceiptsRoot -> R_Node_A;
+            ReceiptsRoot -> R_Node_B;
+            R_Node_A -> R_Leaf_1;
+            R_Node_A -> R_Leaf_2;
+            R_Node_B -> R_Leaf_N;
+        }
+
+        // Connections from Block Header to Trie Roots using HTML ports and default constraints
+        BlockHeader:stateRootCell:s -> StateRoot:n [label=" points to stateRoot", style=dashed, color=blue];
+        BlockHeader:txRootCell:s -> TransactionsRoot:n [label=" points to txRoot", style=dashed, color=green];
+        BlockHeader:receiptsRootCell:s -> ReceiptsRoot:n [label=" points to receiptsRoot", style=dashed, color=red];
+        // Using :s (south) and :n (north) compass points for cleaner edge routing from table cells
+    }
+
+    label="Graphviz Illustration: Merkle Trees in Ethereum";
+    fontsize=20;
+    fontname="Arial";
+}

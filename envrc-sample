@@ -1,0 +1,10 @@
+
+################################################################################
+export ETH_RPC_URL=wss://mainnet.infura.io/ws/v3/<key>
+export WETH_ADDRESS=0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+export USDC_ADDRESS=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+export POOL1_ADDRESS=0xB4e16d0168e52d35CaCD2c6185b44281Ec28C9Dc  # Uniswap V2
+export POOL2_ADDRESS=0x397FF1542f962076d0BFE58eA045FFA2d347ACA0  # SushiSwap: WETH/USDC
+export POLL_INTERVAL_SECONDS=10
+export MIN_PROFIT_THRESHOLD_USD=0.1
+################################################################################

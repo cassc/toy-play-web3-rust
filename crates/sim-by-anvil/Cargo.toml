@@ -1,0 +1,16 @@
+[package]
+name = "sim-by-anvil"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+alloy = { version = "1.0.6", features = ["full"] }
+alloy-node-bindings = "1.0.7"
+alloy-sol-types = "1.0.6"
+alloy-contract = { version = "1.0.6", features = ["pubsub"] }
+anyhow = { version = "1.0.98", features = ["backtrace"] }
+clap = { version = "4.5.38", features = ["derive"] }
+eyre = "0.6.12"
+hex = { version = "0.4.3", features = ["serde"] }
+rust_decimal = { version = "1.37.1", features = ["macros", "maths"] }
+tokio = { version = "1.45.0", features = ["full"] }

@@ -1,0 +1,15 @@
+[package]
+name = "sim"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+alloy = { version = "1.0.6", features = ["full"] }
+alloy-sol-types = "1.0.6"
+anyhow = { version = "1.0.98", features = ["backtrace"] }
+clap = { version = "4.5.38", features = ["derive"] }
+eyre = "0.6.12"
+hex = { version = "0.4.3", features = ["serde"] }
+revm = { version= "24.0.0", features = ["alloydb"] }
+rust_decimal = { version = "1.37.1", features = ["macros", "maths"] }
+tokio = { version = "1.45.0", features = ["full"] }
